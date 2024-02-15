@@ -1,24 +1,51 @@
 #include <sys/cdefs.h>
-#include <sys/types.h>
 
 #include <atomic>
 #include <cassert>
-#include <cstdint>
 #include <exception>
 #include <functional>
 #include <type_traits>
 
+/**
+ * @brief Exception thrown by shared_ptr constructors taking a weak_ptr argument
+ * when the weak_ptr refers to an already deleted object.
+ *
+ * This exception is also thrown by shared_from_this when called on an object
+ * that inherits from enable_shared_from_this<T> but is not managed by any
+ * shared_ptr. Attempting to obtain a shared_ptr from a weak_ptr or calling
+ * shared_from_this under these conditions indicates a logic error where an
+ * attempt is made to access an object that no longer exists.
+ */
 class bad_weak_ptr : public std::exception {
  public:
-  /* Implementations are allowed but not required to override what(). */
+  /**
+   * @brief Returns a human-readable description of the error.
+   *
+   * Overridden to provide a specific error message indicating that the weak_ptr
+   * refers to an already deleted object or shared_from_this was called on an
+   * object not managed by a shared_ptr.
+   *
+   * @return A C-style character string describing the error.
+   */
   virtual char const *what() const noexcept override {
-    return "weak_ptr refers to an already deleted object";
+    return "weak_ptr refers to an already deleted object ";
   };
 
+  /**
+   * @brief Default virtual destructor.
+   */
   virtual ~bad_weak_ptr() noexcept = default;
 };
 
+/**
+ * @brief Helper function to throw bad_weak_ptr exception.
+ *
+ * This function is used internally to throw a bad_weak_ptr exception
+ * when a shared_ptr constructor is called with a weak_ptr referring
+ * to a deleted object or when shared_from_this is improperly called.
+ */
 inline void __throw_bad_weak_ptr() { throw bad_weak_ptr(); }
+
 /**
  * Base class for managing the reference count mechanics for shared_ptr and
  * weak_ptr. This class provides a foundation for implementing custom
