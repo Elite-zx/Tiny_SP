@@ -1,5 +1,3 @@
-#include <new>
-
 #include "shared_ptr_base.h"
 
 /**
@@ -241,9 +239,17 @@ inline void swap(weak_ptr<_Tp>& __a, weak_ptr<_Tp>& __b) noexcept {
   __a.swap(__b);
 }
 
+/**
+ * @brief Allows an object to create shared_ptr instances that share ownership
+ * of *this.
+ *
+ * Typically used as a public base class. Provides utility functions to generate
+ * shared_ptr instances that point to and share ownership with *this object.
+ */
 template <typename _Tp>
 class enable_shared_from_this {
  protected:
+  /* Protected default constructor to prevent standalone instantiation. */
   constexpr enable_shared_from_this() noexcept {}
   enable_shared_from_this(const enable_shared_from_this&) noexcept {}
 

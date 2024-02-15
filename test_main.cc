@@ -60,6 +60,7 @@ void test_shared_weak_ptr() {
               << std::endl;
   }
 
+  // 从栈上分配的TestClass对象上直接调用shared_from_this, 触发bad_weak_ptr
   try {
     TestClass tc("Throw bad_weak_ptr");
     tc.test_shared_from_this();

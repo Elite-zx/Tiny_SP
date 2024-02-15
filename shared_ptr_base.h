@@ -568,7 +568,9 @@ class __weak_count {
   _sp_counted_base *_M_pi;
 };
 
-/** now weak_count is defined **/
+/** now weak_count is defined.Related __shared_count member function can be
+ * defined here **/
+
 /* This function will be called in this situation: the constructors of
  * shared_ptr that take weak_ptr as the argument, when the
  * weak_ptr refers to an already deleted object */
@@ -589,9 +591,17 @@ inline bool __shared_count::_M_less(const __weak_count &__rhs) const noexcept {
   return std::less<_sp_counted_base *>()(this->_M_pi, __rhs._M_pi);
 }
 
+/**
+ * @brief Internal implementation detail to support enable_shared_from_this
+ * functionality.
+ *
+ * This class template provides mechanisms to safely generate shared_ptr
+ * instances that point to *this object, typically used as a base class.
+ */
 template <typename _Tp>
 class __enable_shared_from_this {
  protected:
+  /* Protected default constructor to prevent standalone instantiation. */
   constexpr __enable_shared_from_this() noexcept {}
   __enable_shared_from_this(const __enable_shared_from_this &) noexcept {}
 
@@ -621,6 +631,8 @@ class __enable_shared_from_this {
     _M_weak_this._M_assign(__p, __n);
   }
 
+  /*  Used by __shared_ptr::_M_enable_shared_from_this_with. Convert derived
+   * class pointer to base class (__enable_shared_from_this) pointer  */
   friend const __enable_shared_from_this *__enable_shared_from_this_base(
       const __shared_count &, const __enable_shared_from_this *__p) {
     return __p;
@@ -868,7 +880,9 @@ class __weak_ptr {
   }
 
   /**
-   * Attempts to obtain a __shared_ptr that owns the observed object.
+   * Attempts to obtain a __shared_ptr that owns the observed object.  If there
+   * is no observed object, i.e. *this is empty, then the returned __shared_ptr
+   * also is empty
    */
   __shared_ptr<_Tp> lock() const noexcept {
     return __shared_ptr<element_type>(*this, std::nothrow);
