@@ -3,6 +3,7 @@
 #include <string>
 
 #include "shared_ptr.h"
+using namespace morris;
 
 class TestClass : public enable_shared_from_this<TestClass> {
  public:

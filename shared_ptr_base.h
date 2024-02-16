@@ -1,3 +1,13 @@
+/*
+ * File: shared_ptr_base.h
+ * Author: Zhang Xun
+ * Date: 2024-02-16
+ *
+ * Copyright (c) 2024, Zhang Xun
+ *
+ * Simplified shared_ptr/weak_ptr/enable_shared_from_this based on GNU
+ * source code
+ */
 #include <sys/cdefs.h>
 
 #include <atomic>
@@ -6,6 +16,7 @@
 #include <functional>
 #include <type_traits>
 
+namespace morris {
 /**
  * @brief Exception thrown by shared_ptr constructors taking a weak_ptr argument
  * when the weak_ptr refers to an already deleted object.
@@ -17,7 +28,7 @@
  * attempt is made to access an object that no longer exists.
  */
 class bad_weak_ptr : public std::exception {
- public:
+  public:
   /**
    * @brief Returns a human-readable description of the error.
    *
@@ -926,3 +937,5 @@ class __weak_ptr {
   element_type *_M_ptr;      /* Contained pointer.*/
   __weak_count _M_ref_count; /* Reference counter.*/
 };
+
+}  // namespace morris

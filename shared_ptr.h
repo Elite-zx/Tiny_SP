@@ -1,4 +1,16 @@
+/*
+ * File: shared_ptr_base.h
+ * Author: Zhang Xun
+ * Date: 2024-02-16
+ *
+ * Copyright (c) 2024, Zhang Xun
+ *
+ * Simplified shared_ptr/weak_ptr/enable_shared_from_this based on GNU
+ * source code
+ */
+
 #include "shared_ptr_base.h"
+namespace morris {
 
 /**
  * A smart pointer that retains shared ownership of an object through a pointer.
@@ -288,3 +300,5 @@ class enable_shared_from_this {
 
   mutable weak_ptr<_Tp> _M_weak_this;
 };
+
+}  // namespace morris
